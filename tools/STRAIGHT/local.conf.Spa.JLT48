@@ -1,0 +1,59 @@
+WD_EMIME=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo
+VC_PATH=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/VCTK2/bin
+EST_PATH=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/VCTK2/speech_tools/bin
+LPF_PATH=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/VCTK2/lpf
+INTER_INPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/database/wav/Spa/JLT48
+CMP_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/features/Spa/JLT48
+GV_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/gv/Spa/JLT48
+HTS_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/hts_engine/Spa/JLT48
+VAD_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/voice_activity/Spa/JLT48
+RAW_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/raw/Spa/JLT48
+F0_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/f0/Spa/JLT48
+MCEP_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/mcep/Spa/JLT48
+BAP_OUTPUT=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/inter-module/bap/Spa/JLT48
+TMP_DIR=/autofs/home/gth08a/EXPERIMENTOS/juancho/VCTK2/Research-Demo/fa-tts/STRAIGHT-TTS/tmp/Spa/JLT48
+### GENERAL SETTINGS###
+
+WORK_ROOT=${WD_EMIME}/fa-tts/STRAIGHT-TTS
+
+# Channel to analyse (L/R)
+channel="L"
+
+# Max silence length (including hangover)
+silleng=0.6
+
+# Min silence (excluding hangover)
+minsil=0.035
+
+# Speech analysis 
+level="-26"
+rate=48000
+fftlen=4096
+shift=5
+windur=30
+
+# F0 analysis
+maxf0=480.0
+minf0=55.0
+vuvthresh=0.3
+outlier=4
+# F0 transform scale: Log, Mel, ERB
+f0scale="Mel"
+
+# Mel-cepstral analysis 
+# Spectral auditory scale: Bark, ERB
+specscale="Bark"
+# Spectral analysis method: MCEP, MGC, MELLSP, MGCLSP
+spectype="MCEP"
+order=59
+mgcgamma=3
+
+# Aperiodicity analysis
+apord=2049
+baporder=25
+
+# Delta window 
+winlength=5
+
+# Analysis-by-Synthesis 
+abs=0

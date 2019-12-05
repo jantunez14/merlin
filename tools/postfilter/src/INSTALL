@@ -1,0 +1,6 @@
+% aclocal
+% automake -a -c 
+% autoconf
+% ./configure CFLAGS="-I../include" LDFLAGS="-L../lib" 
+% make
+% make install

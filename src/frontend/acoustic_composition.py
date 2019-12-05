@@ -111,7 +111,7 @@ class   AcousticComposition(AcousticBase):
             #    logger.info('processing file %4d of %4d : %s exists' % (i+1, self.file_number, out_file_name))
                     #    continue
 
-            logger.info('processing file %4d of %4d : %s' % (i+1,self.file_number,out_file_name))
+            logger.info('processing2 file %4d of %4d : %s' % (i+1,self.file_number,out_file_name))
 
             out_data_matrix = None
             out_frame_number = 0
@@ -122,6 +122,8 @@ class   AcousticComposition(AcousticBase):
                 in_file_name   = in_file_list_dict[data_stream_name][i]
                 in_feature_dim = in_dimension_dict[data_stream_name]
                 features, frame_number = io_funcs.load_binary_file_frame(in_file_name, in_feature_dim)
+
+                logger.debug('>>> in_file_name' + in_file_name)
 
                 if k == 0:
                     out_frame_number = frame_number

@@ -1,0 +1,19 @@
+ -------------------------------------------------------
+  Input file: ................... TMP_DIR/raw/arctic_a0001.raw_orig, 16 bits, fs=16000 Hz
+  Block Length: .................     640 [samples]
+  Starting Block: ...............       1 []
+  Number of Blocks: .............      84 []
+  dBov desired for output: ...... -26.000 [dBov]
+  Norm factor desired is: .......   0.444 [times]
+  Max norm WITHOUT saturation: .. -14.742 [dBov]
+ -------------------------------------------------------
+  DC level: .....................      -0 [PCM]
+  Maximum positive value: .......   19637 [PCM]
+  Maximum negative value: .......  -20210 [PCM]
+ -------------------------------------------------------
+  Long term energy (rms): ....... -19.281 [dBov]
+  Active speech level: .......... -18.940 [dBov]
+  RMS peak-factor found: ........  15.083 [dB]
+  Active peak factor found: .....  14.742 [dB]
+  Activity factor: ..............  92.458 [%]
+ -------------------------------------------------------

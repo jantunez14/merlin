@@ -156,7 +156,11 @@ def train_DNN(train_xy_file_list, valid_xy_file_list, \
     # get loggers for this function
     # this one writes to both console and file
     logger = logging.getLogger("main.train_DNN")
-    logger.debug('Starting train_DNN')
+    logger.info('Starting train_DNN')
+
+    logger.info('>>> Starting train_DNN')
+
+    #logger.debug('>>> train_xy_file_list' + (''.join(train_xy_file_list)[0]))
 
     if plot:
         # this one takes care of plotting duties
@@ -219,7 +223,7 @@ def train_DNN(train_xy_file_list, valid_xy_file_list, \
     if cfg.rnn_batch_training:
         train_data_reader.set_rnn_params(training_algo=cfg.training_algo, batch_size=cfg.batch_size, seq_length=cfg.seq_length, merge_size=cfg.merge_size, bucket_range=cfg.bucket_range)
         valid_data_reader.reshape_input_output()
-    
+    #========== Train ==========#
     shared_train_set_xy, temp_train_set_x, temp_train_set_y = train_data_reader.load_one_partition()
     train_set_x, train_set_y = shared_train_set_xy
     shared_valid_set_xy, temp_valid_set_x, temp_valid_set_y = valid_data_reader.load_one_partition()
@@ -257,6 +261,7 @@ def train_DNN(train_xy_file_list, valid_xy_file_list, \
     ## unpickled_dnn_model.build_finetne_function() again. This is another way, construct
     ## new model from scratch with opt_l2e=True, then copy existing weights over:
     use_lhuc = cfg.use_lhuc
+    #=============== Aqui no entra ===============#
     if init_dnn_model_file != "_":
         logger.info('load parameters from existing model: %s' %(init_dnn_model_file))
         if not os.path.isfile(init_dnn_model_file):
@@ -282,6 +287,7 @@ def train_DNN(train_xy_file_list, valid_xy_file_list, \
                 else:
                     sys.exit('old and new weight matrices have different shapes')
                 k = k + 1        
+    
     train_fn, valid_fn = dnn_model.build_finetune_functions(
                     (train_set_x, train_set_y), (valid_set_x, valid_set_y), use_lhuc, layer_index=cfg.freeze_layers)  #, batch_size=batch_size
     logger.info('fine-tuning the %s model' %(model_type))
@@ -524,6 +530,7 @@ def main_function(cfg):
     # get another logger to handle plotting duties
     plotlogger = logging.getLogger("plotting")
 
+    logger.info('Inicio de main_function():')
     # later, we might do this via a handler that is created, attached and configured
     # using the standard config mechanism of the logging module
     # but for now we need to do it manually
@@ -615,7 +622,7 @@ def main_function(cfg):
 
 
     #-----------------------------------------
-
+    #==================Aqui si entra==================#
     if cfg.NORMLAB:
         # simple HTS labels
         logger.info('preparing label data (input) using standard HTS style labels')
@@ -653,7 +660,7 @@ def main_function(cfg):
             min_max_normaliser.normalise_data(nn_label_file_list, nn_label_norm_file_list)
 
 
-
+    #==================Aqui no entra==================#
     if min_max_normaliser != None and not cfg.GenTestList:
         ### save label normalisation information for unseen testing labels
         label_min_vector = min_max_normaliser.min_vector
@@ -666,13 +673,16 @@ def main_function(cfg):
         fid.close()
         logger.info('saved %s vectors to %s' %(label_min_vector.size, label_norm_file))
 
+    #==================Aqui no entra==================#
     ### make output duration data
     if cfg.MAKEDUR:
         logger.info('creating duration (output) features')
         label_normaliser.prepare_dur_data(in_label_align_file_list, file_paths.dur_file_list, cfg.label_type, cfg.dur_feature_type)
 
+    #==================Aqui si entra==================#
     ### make output acoustic data
     if cfg.MAKECMP:
+        logger.info('>>> MAKECMP <<<')
         logger.info('creating acoustic (output) features')
         delta_win = cfg.delta_win #[-0.5, 0.0, 0.5]
         acc_win = cfg.acc_win     #[1.0, -2.0, 1.0]
@@ -689,8 +699,10 @@ def main_function(cfg):
             acoustic_worker.make_equal_frames(dur_file_list, lf0_file_list, cfg.in_dimension_dict)
             acoustic_worker.prepare_nn_data(in_file_list_dict, nn_cmp_file_list, cfg.in_dimension_dict, cfg.out_dimension_dict)
         else:
+            logger.info('>>> perform_acoustic_composition:')
             perform_acoustic_composition(delta_win, acc_win, in_file_list_dict, nn_cmp_file_list, cfg, parallel=True)
-
+        
+        #==================Aqui no entra==================#
         if cfg.remove_silence_using_binary_labels:
             ## do this to get lab_dim:
             label_composer = LabelComposer()
@@ -704,8 +716,10 @@ def main_function(cfg):
             trim_silence(nn_cmp_file_list, nn_cmp_file_list, cfg.cmp_dim,
                                 binary_label_file_list, lab_dim, silence_feature)
 
+        #==================Aqui si entra==================#
         elif cfg.remove_silence_using_hts_labels: 
             ## back off to previous method using HTS labels:
+            logger.info('>>> remove_silence_using_hts_labels:')
             remover = SilenceRemover(n_cmp = cfg.cmp_dim, silence_pattern = cfg.silence_pattern, label_type=cfg.label_type, remove_frame_features = cfg.add_frame_features, subphone_feats = cfg.subphone_feats)
             remover.remove_silence(nn_cmp_file_list, in_label_align_file_list, nn_cmp_file_list) # save to itself
 
@@ -713,22 +727,32 @@ def main_function(cfg):
     var_dir  = file_paths.var_dir
     var_file_dict = file_paths.get_var_dic()
 
+
+    #==================Aqui si entra==================#
     ### normalise output acoustic data
     if cfg.NORMCMP:
         logger.info('normalising acoustic (output) features using method %s' % cfg.output_feature_normalisation)
         cmp_norm_info = None
+        #==================Aqui si entra==================#
         if cfg.output_feature_normalisation == 'MVN':
+            logger.info('>>> MVN')
             normaliser = MeanVarianceNorm(feature_dimension=cfg.cmp_dim)
+            #==================Aqui no entra==================#
             if cfg.GenTestList:
+                logger.info('>>> GenTestList')
                 # load mean std values
                 global_mean_vector, global_std_vector = normaliser.load_mean_std_values(norm_info_file)
+            #==================Aqui si entra==================#
             else:
+                logger.info('>>> not GenTestList')
                 ###calculate mean and std vectors on the training data, and apply on the whole dataset
                 global_mean_vector = normaliser.compute_mean(nn_cmp_file_list[0:cfg.train_file_number], 0, cfg.cmp_dim)
                 global_std_vector = normaliser.compute_std(nn_cmp_file_list[0:cfg.train_file_number], global_mean_vector, 0, cfg.cmp_dim)
                 # for hmpd vocoder we don't need to normalize the 
                 # pdd values
+                #==================Aqui no entra==================#
                 if cfg.vocoder_type == 'hmpd':
+                    logger.info('>>> hmpd')
                     stream_start_index = {}
                     dimension_index = 0
                     recorded_vuv = False
@@ -747,7 +771,9 @@ def main_function(cfg):
             normaliser.feature_normalisation(nn_cmp_file_list, nn_cmp_norm_file_list)
             cmp_norm_info = numpy.concatenate((global_mean_vector, global_std_vector), axis=0)
 
+        #==================Aqui no entra==================#
         elif cfg.output_feature_normalisation == 'MINMAX':
+            logger.info('>>> MINMAX')
             min_max_normaliser = MinMaxNormalisation(feature_dimension = cfg.cmp_dim, min_value = 0.01, max_value = 0.99)
             if cfg.GenTestList:
                 min_max_normaliser.load_min_max_values(norm_info_file)
@@ -762,7 +788,8 @@ def main_function(cfg):
         else:
             logger.critical('Normalisation type %s is not supported!\n' %(cfg.output_feature_normalisation))
             raise
-
+        
+        #==================Aqui si entra==================#
         if not cfg.GenTestList:
             cmp_norm_info = numpy.array(cmp_norm_info, 'float32')
             fid = open(norm_info_file, 'wb')
@@ -796,7 +823,7 @@ def main_function(cfg):
     if cfg.VoiceConversion:
         lab_dim = cfg.cmp_dim
 
-    logger.info('label dimension is %d' % lab_dim)
+    logger.info('label dimension is %d' % lab_dim) # label dimension is 425
 
     combined_model_arch = str(len(hidden_layer_size))
     for hid_size in hidden_layer_size:
@@ -808,6 +835,7 @@ def main_function(cfg):
     gen_dir = os.path.join(gen_dir, temp_dir_name)
 
     if cfg.switch_to_keras or cfg.switch_to_tensorflow:
+        logger.info('>>> Switch to keras and tensorflow')
         ### set configuration variables ###
         cfg.inp_dim = lab_dim
         cfg.out_dim = cfg.cmp_dim
@@ -821,11 +849,13 @@ def main_function(cfg):
             cfg.pred_feat_dir = cfg.test_synth_dir
         
     if cfg.switch_to_keras:
+        logger.info('>>> switch to keras')
         ### call kerasclass and use an instance ###
         from run_keras_with_merlin_io import KerasClass
         keras_instance = KerasClass(cfg)
     
     elif cfg.switch_to_tensorflow:
+        logger.info('>>> switch to tensorflow')
         ### call Tensorflowclass and use an instance ###
         from run_tensorflow_with_merlin_io import TensorflowClass
         tf_instance = TensorflowClass(cfg)
@@ -861,6 +891,7 @@ def main_function(cfg):
                 keras_instance.train_keras_model()
             elif cfg.switch_to_tensorflow:
                 tf_instance.train_tensorflow_model()
+            #==================Aqui si entra==================#
             else:
                 train_DNN(train_xy_file_list = (train_x_file_list, train_y_file_list), \
                       valid_xy_file_list = (valid_x_file_list, valid_y_file_list), \
@@ -878,8 +909,9 @@ def main_function(cfg):
             raise
 
 
-
+    # Generacion DNN. NO ENTRA!!!
     if cfg.GENBNFEA:
+        logger.info('>>> GENBNFEA')
         # Please only tune on this step when you want to generate bottleneck features from DNN
         gen_dir = file_paths.bottleneck_features
 
@@ -1297,7 +1329,7 @@ if __name__ == '__main__':
     if PBS_JOBID:
         logger.info('  PBS_JOBID: '+PBS_JOBID)
 
-
+    #==================Aqui no entra==================#
     if cfg.profile:
         logger.info('profiling is activated')
         import cProfile, pstats
@@ -1315,7 +1347,7 @@ if __name__ == '__main__':
         logger.info('---Profiling result follows---\n%s' %  profiling_output.getvalue() )
         profiling_output.close()
         logger.info('---End of profiling result---')
-
+    #=================================================#
     else:
         main_function(cfg)
 

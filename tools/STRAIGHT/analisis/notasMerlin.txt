@@ -1,0 +1,6 @@
+./straight_bndap -bndap -float -f 48000 -shift 5 -f0shift 5 -apord 2049 -fftl 4096 -f0file test/F_N_10131.f0 -raw test/F_N_10131.raw test/F_N_10131.bndap
+./straight_mcep -mcep -float -f 48000 -shift 5 -f0shift 5 -apord 2049 -fftl 4096 -order 60 -f0file test/F_N_10131.f0 -raw test/F_N_10131.raw test/F_N_10131.mcep
+
+
+Mirar VM:
+/home/fabio/VCTK2/Research-Demo/fa-tts/Straight-TTS/wav2feature.sh

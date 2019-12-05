@@ -1,0 +1,62 @@
+#WD_EMIME=/autofs/home/gth01a/EXPERIMENTOS/fabionoguera/VCTK2/Research-Demo
+#VC_PATH=/autofs/home/gth01a/EXPERIMENTOS/fabionoguera/VCTK2/VCTK2/bin
+#EST_PATH=/autofs/home/gth01a/EXPERIMENTOS/fabionoguera/VCTK2/VCTK2/speech_tools/bin
+#LPF_PATH=/autofs/home/gth01a/EXPERIMENTOS/fabionoguera/VCTK2/VCTK2/lpf
+#INTER_INPUT=/autofs/home/gth01a/EXPERIMENTOS/fabionoguera/VCTK2/Research-Demo/database/wav/Spa/JLT
+
+TMP_DIR="TMP_DIR"
+CMP_OUTPUT="CMP"
+HTS_OUTPUT="HTS"
+GV_OUTPUT="GV"
+VAD_OUTPUT="VAD"
+RAW_OUTPUT="RAW"
+MCEP_OUTPUT="MCEP"
+F0_OUTPUT="F0"
+BAP_OUTPUT="BAP"
+
+
+### GENERAL SETTINGS###
+
+WORK_ROOT=${WD_EMIME}/fa-tts/STRAIGHT-TTS
+
+# Channel to analyse (L/R)
+channel="L"
+
+# Max silence length (including hangover)
+silleng=0.6
+
+# Min silence (excluding hangover)
+minsil=0.035
+
+# Speech analysis 
+level="-26"
+rate=48000
+fftlen=4096
+shift=5
+windur=30
+
+# F0 analysis
+maxf0=480.0
+minf0=55.0
+vuvthresh=0.3
+outlier=4
+# F0 transform scale: Log, Mel, ERB
+f0scale="Mel"
+
+# Mel-cepstral analysis 
+# Spectral auditory scale: Bark, ERB
+specscale="Bark"
+# Spectral analysis method: MCEP, MGC, MELLSP, MGCLSP
+spectype="MCEP"
+order=59
+mgcgamma=3
+
+# Aperiodicity analysis
+apord=2049
+baporder=25
+
+# Delta window 
+winlength=5
+
+# Analysis-by-Synthesis 
+abs=1

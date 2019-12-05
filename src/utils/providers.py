@@ -278,6 +278,7 @@ class ListDataProvider(object):
         return self.MLU_div
 
     def load_one_partition(self):
+        self.logger.info('>>> load_one_partition')
         if self.sequential == True:
             if not self.network_type or self.network_type=="RNN":
                 if self.rnn_batch_training:
@@ -299,7 +300,7 @@ class ListDataProvider(object):
 
     def load_next_batch(self):
         io_funcs = BinaryIOCollection()
-
+        self.logger.info('>>> load_next_batch')
         ## set sequence length for batch training 
         if(self.training_algo == 1):
             # set seq length to maximum seq length from current batch
